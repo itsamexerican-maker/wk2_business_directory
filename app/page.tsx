@@ -78,7 +78,7 @@ const cards: Card[] = [
     phone: '(925) 555-0606',
     email: 'wschlegle@gmail.com',
     website: 'https://michiganlandc.com',
-    category: 'Serivices',
+    category: 'Services',
   },
   {
     name: 'Jennifer Wertz',
@@ -97,7 +97,7 @@ const categoryColors: Record<string, string> = {
   Health: 'bg-green-100 text-green-800',
   Finance: 'bg-amber-100 text-amber-800',
   Business: 'bg-indigo-100 text-indigo-800',
-  Real_Estate: 'bg-orange-100 text-orange-800',
+  'Real Estate': 'bg-orange-100 text-orange-800',
   Education: 'bg-purple-100 text-purple-800',
   Services: 'bg-teal-100 text-teal-800',
   Restaurant: 'bg-gray-100 text-gray-800',
