@@ -28,12 +28,12 @@ interface FormErrors {
 
 function validate(f: FormFields): FormErrors {
   const errors: FormErrors = {};
-  if (f.firstName.trim().length < 1)   errors.firstName = 'Required field.';
-  if (f.lastName.trim().length < 1)    errors.lastName  = 'Required field.';
-  if (!emailRegex.test(f.email.trim())) errors.email    = 'Enter a valid email (e.g. name@domain.com).';
-  if (!phoneRegex.test(f.phone.trim())) errors.phone    = 'Enter a valid US phone number (e.g. (925) 555-0101).';
-  if (f.subject.trim().length < 2)     errors.subject   = 'Please add a subject.';
-  if (f.message.trim().length < 5)     errors.message   = 'Please include a message.';
+  if (f.firstName.trim().length < 1)    errors.firstName = 'Required field.';
+  if (f.lastName.trim().length < 1)     errors.lastName  = 'Required field.';
+  if (!emailRegex.test(f.email.trim())) errors.email     = 'Enter a valid email (e.g. name@domain.com).';
+  if (!phoneRegex.test(f.phone.trim())) errors.phone     = 'Enter a valid US phone number (e.g. (925) 555-0101).';
+  if (f.subject.trim().length < 2)      errors.subject   = 'Please add a subject.';
+  if (f.message.trim().length < 5)      errors.message   = 'Please include a message.';
   return errors;
 }
 
@@ -92,16 +92,49 @@ export default function ContactPage() {
   const [fields, setFields] = useState<FormFields>({
     firstName: '', lastName: '', email: '', phone: '', subject: '', message: '',
   });
-  const [errors, setErrors]     = useState<FormErrors>({});
+  const [errors, setErrors]       = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     const { name, value } = e.target;
-    setFields((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: undefined }));
+    const updated = { ...fields, [name]: value };
+    setFields(updated);
     setSubmitted(false);
+
+    const newErrors = validate(updated);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: value.trim().length > 0 ? newErrors[name as keyof FormErrors] : undefined,
+    }));
+  }
+
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    // Strip everything except digits, cap at 10
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+
+    // Rebuild the mask as digits arrive
+    let masked = '';
+    if (digits.length === 0) {
+      masked = '';
+    } else if (digits.length <= 3) {
+      masked = `(${digits}`;
+    } else if (digits.length <= 6) {
+      masked = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    } else {
+      masked = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    const updated = { ...fields, phone: masked };
+    setFields(updated);
+    setSubmitted(false);
+
+    const newErrors = validate(updated);
+    setErrors((prev) => ({
+      ...prev,
+      phone: masked.length > 0 ? newErrors.phone : undefined,
+    }));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -217,38 +250,59 @@ export default function ContactPage() {
             {/* Name row */}
             <div className="grid grid-cols-2 gap-4">
               <Field label="First name" error={errors.firstName}>
-                <input name="firstName" type="text" value={fields.firstName}
-                  onChange={handleChange} placeholder="Jane" className={inputClass('firstName')} />
+                <input
+                  name="firstName" type="text" value={fields.firstName}
+                  onChange={handleChange} placeholder="Jane"
+                  className={inputClass('firstName')}
+                />
               </Field>
               <Field label="Last name" error={errors.lastName}>
-                <input name="lastName" type="text" value={fields.lastName}
-                  onChange={handleChange} placeholder="Smith" className={inputClass('lastName')} />
+                <input
+                  name="lastName" type="text" value={fields.lastName}
+                  onChange={handleChange} placeholder="Smith"
+                  className={inputClass('lastName')}
+                />
               </Field>
             </div>
 
             <Field label="Email address" error={errors.email}>
-              <input name="email" type="email" value={fields.email}
-                onChange={handleChange} placeholder="jane@example.com" className={inputClass('email')} />
+              <input
+                name="email" type="email" value={fields.email}
+                onChange={handleChange} placeholder="jane@example.com"
+                className={inputClass('email')}
+              />
             </Field>
 
+            {/* Phone — uses dedicated masked handler */}
             <Field label="Phone number" error={errors.phone}>
-              <input name="phone" type="tel" value={fields.phone}
-                onChange={handleChange} placeholder="(925) 555-0101" className={inputClass('phone')} />
+              <input
+                name="phone" type="tel" value={fields.phone}
+                onChange={handlePhoneChange} placeholder="(925) 555-0101"
+                className={inputClass('phone')}
+                maxLength={14}
+              />
             </Field>
 
             <Field label="Subject" error={errors.subject}>
-              <input name="subject" type="text" value={fields.subject}
-                onChange={handleChange} placeholder="How can we help?" className={inputClass('subject')} />
+              <input
+                name="subject" type="text" value={fields.subject}
+                onChange={handleChange} placeholder="How can we help?"
+                className={inputClass('subject')}
+              />
             </Field>
 
             <Field label="Message" error={errors.message}>
-              <textarea name="message" rows={4} value={fields.message}
+              <textarea
+                name="message" rows={4} value={fields.message}
                 onChange={handleChange} placeholder="Tell us a bit more..."
-                className={`${inputClass('message')} resize-none`} />
+                className={`${inputClass('message')} resize-none`}
+              />
             </Field>
 
-            <button type="submit"
-              className="w-full bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 text-sm tracking-wide uppercase">
+            <button
+              type="submit"
+              className="w-full bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 text-sm tracking-wide uppercase"
+            >
               Send Message →
             </button>
 
@@ -257,6 +311,7 @@ export default function ContactPage() {
                 ✓ Message sent — we'll be in touch within one business day.
               </div>
             )}
+
           </form>
         </div>
 
