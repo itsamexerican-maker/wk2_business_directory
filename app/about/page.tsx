@@ -6,13 +6,14 @@ export default function About() {
       {/* Hero Section */}
       <section className="text-center mb-16">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-6 tracking-tight">
-          Our Mission: Digital Connection
+          Our Mission: To Connect Professionals Digitally
         </h1>
         <p className="text-lg text-gray-600 leading-relaxed">
           In an increasingly digital world, the personal touch of a business
-          card often gets lost. Our directory is designed to bridge that
+          card often gets lost and the information is copied digitally 
+          anyway for convenience. Our directory is designed to bridge that
           gap—bringing local professionals, from Web Developers to Licensed
-          Acupuncturists, into one unified, accessible space.
+          Acupuncturists, into a single, unified, and accessible space.
         </p>
       </section>
 
@@ -23,7 +24,7 @@ export default function About() {
           <p className="text-gray-600">
             This platform serves as a community hub where local services are
             easily discoverable. Whether you are looking for a CPA or a Fitness
-            instructor, we aim to foster genuine local partnerships and
+            Instructor, we aim to foster genuine local partnerships as well as
             professional growth.
           </p>
         </section>
