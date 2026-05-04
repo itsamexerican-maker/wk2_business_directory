@@ -158,7 +158,7 @@ export default function ContactPage() {
       <header className="mb-10">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Contact Us</h1>
         <p className="text-lg text-gray-600">
-          We'd love to hear from you. Reach out and we'll get back to you within one business day.
+          We&apos;d love to hear from you. Reach out and we&apos;ll get back to you within one business day.
         </p>
       </header>
 
@@ -308,7 +308,7 @@ export default function ContactPage() {
 
             {submitted && (
               <div className="bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-xl px-4 py-3 text-center">
-                ✓ Message sent — we'll be in touch within one business day.
+                ✓ Message sent — we&apos;ll be in touch within one business day.
               </div>
             )}
 
